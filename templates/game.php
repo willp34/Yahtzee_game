@@ -6,7 +6,6 @@
         Rolls :
         <?php
 
-        session_start();
         if(empty($_SESSION['yahtzee_game'] )){
             ?>
            <span id="rolls"> 0 /3 </span>

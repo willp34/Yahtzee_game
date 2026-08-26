@@ -6,6 +6,15 @@
             //roll
             add_action('wp_ajax_yg_roll',[$this,'roll']);
             add_action('wp_ajax_nopriv_yg_roll',[$this,'roll']);
+
+            //Held
+            add_action('wp_ajax_yg_hold',[$this,'hold']);
+            add_action('wp_ajax_nopriv_yg_hold',[$this,'hold']);
+
+            //select Scores
+            add_action('wp_ajax_yg_score',[$this,'score']);
+            add_action('wp_ajax_nopriv_yg_score',[$this,'score']);
+
         }
 
 
@@ -28,14 +37,38 @@
                 ]);
             }
 
-            $dice = $game->roll();
+            $game->roll();
             wp_send_json_success([
-                'dice' => $dice,
+                'dice' => $game->get_dice(),
                 'held' => $game->get_held(),
-                'rolls' => $game->get_rolls()
+                'rolls' => $game->get_rolls(),
+                'possible_scores' => $game->possible_scores(),
+                'used_scores' => $game->get_scores()
             ]);
         }
 
+        public function score(){
+
+            check_ajax_referer('yahtzee', 'nonce');
+            $category = sanitize_key($_POST['held']);
+            $game =  YG_Game::load();
+
+            if(!$game->score_category($category)){
+                wp_send_json_error(['message' => 'Category already used.']);
+            }
+
+              wp_send_json_success([
+                'dice'            => $game->get_dice(),
+                'held'            => $game->get_held(),
+                'rolls'           => $game->get_rolls(),
+                'possible_scores' => $game->possible_scores(),
+                'used_scores'     => $game->get_scores(),
+                'upper_total'     => $game->get_upper_total(),
+                'bonus'           => $game->get_bonus(),
+                'lower_total'     => $game->get_lower_total(),
+                'grand_total'     => $game->get_grand_total()
+            ]);
+        }
         public function hold(){
             $this->check_request();
 

@@ -14,7 +14,7 @@ class YG_Plugin
        // require_once YG_PATH.'includes/class-shortcode.php';
         require_once YG_PATH.'inc/ajax.php';
         require_once YG_PATH.'inc/game.php';
-       // require_once YG_PATH.'inc/class-scorecard.php';
+        require_once YG_PATH.'inc/score-card.php';
 
         add_action('wp_enqueue_scripts', [$this,'enqueue']);
         add_shortcode('yahtzee', [$this,'render_shortcode']);
@@ -40,6 +40,15 @@ class YG_Plugin
             YG_URL.'assets/css/game.css',
             [],
             '1.0'
+        );
+
+
+        wp_enqueue_script(
+            'yahtzee_dice',
+            YG_URL.'assets/js/src/dice.js',
+            ['jquery'],
+            '1.0',
+            true
         );
 
         wp_enqueue_script(
