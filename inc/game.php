@@ -12,12 +12,15 @@ class YG_Game
 
     private int $rolls;
 
+    private $turns;
+
     public function __construct(){
 
         $this->scores =[];
         $this->dice = [1,1,1,1,1];
         $this->held = [false,false,false,false,false];
         $this->rolls = 0 ;
+        $this->turns = 13;
     }
 
     private static function new_game(){
@@ -45,7 +48,8 @@ class YG_Game
         $game->dice = $data['dice'] ?? [1,1,1,1,1];
         $game->held = $data['held'] ?? [false,false,false,false,false];
         $game->rolls = $data['rolls'] ?? 0;
-
+        $game->scores = $data['scores'] ?? [] ;
+        $game->turns = $data['turnss'] ?? 0;
         return $game;
     }
 
@@ -57,8 +61,15 @@ class YG_Game
         $_SESSION['yahtzee_game'] = [
             'dice'  => $this->dice,
             'held'  => $this->held,
-            'rolls' => $this->rolls
+            'rolls' => $this->rolls,
+            'scores'=> $this->scores,
+            'turns' => $this->turns,
+            'upper_bonus' => $this->get_bonus(),
+            'upper_section' => $this->get_upper_total(),
+            'lower_section' => $this->get_lower_total(),
+            'grand_total' => $this->get_grand_total()
         ];
+
     }
 
     public function roll(){
@@ -90,6 +101,7 @@ class YG_Game
         $this->held = [false, false, false, false, false];
         // Optional: clear dice ready for next roll.
         $this->dice = [1,1,1,1,1];
+        $this->turns--;
         $this->save();
 
         return true;
@@ -127,6 +139,10 @@ class YG_Game
 
     public function get_dice(){
         return $this->dice;
+    }
+
+    public function get_turns(){
+        return $this->turns;
     }
 
     public function get_held(){

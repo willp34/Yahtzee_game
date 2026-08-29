@@ -26,8 +26,9 @@ class YG_Plugin
     {
         ob_start();
 
-        session_start();
+//        session_start();
         $rolls = $_SESSION['yahtzee_game']['rolls'] ?? 0;
+        $turns = $_SESSION['yahtzee_game']['turns'] ?? 0;
 
         include YG_PATH.'templates/game.php';
 
@@ -35,6 +36,9 @@ class YG_Plugin
     }
     public function enqueue()
     {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         wp_enqueue_style(
             'yahtzee',
             YG_URL.'assets/css/game.css',
@@ -64,8 +68,18 @@ class YG_Plugin
             'Yahtzee',
             [
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('yahtzee')
+                'nonce' => wp_create_nonce('yahtzee'),
+                'score_board' =>  [
+                    'used_scores' => $_SESSION['yahtzee_game']['scores'] ?? []
+                ],
+                'turns' => $_SESSION['yahtzee_game']['turns'] ?? 0,
+                'upper_bonus' => $_SESSION['yahtzee_game']['upper_bonus'] ?? 0,
+                'upper_section' => $_SESSION['yahtzee_game']['upper_section'] ?? 0,
+                'lower_section' => $_SESSION['yahtzee_game']['lower_section'] ?? 0,
+                'grand_total' => $_SESSION['yahtzee_game']['grand_total'] ?? 0 ,
+
             ]
         );
+
     }
 }

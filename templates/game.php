@@ -1,22 +1,13 @@
 <div id="yahtzee-game">
+    <div id="message-dialog" class='notice notice-error'> </div>
     <h2>Yahtzee </h2>
 
 
     <div class="roll-information">
+        <button id="yg-reset" class="button">Reset Game</button>
         Rolls :
-        <?php
 
-        if(empty($_SESSION['yahtzee_game'] )){
-            ?>
-           <span id="rolls"> 0 /3 </span>
-        <?php
-        }
-        else {
-            ?>
-                <span id="rolls"> <?php echo $_SESSION['yahtzee_game']['rolls'] ?> /3 </span>
-            <?php
-        }
-        ?>
+            <span id="rolls"> <?php echo $rolls ; ?> /3 </span>
 
     </div>
     <div id="dice-board">
@@ -40,7 +31,7 @@
 
     </div>
 
-    <button type="btton"
+    <button type="button"
     id="yg-roll"
     class="yahtzee-roll">
         Roll Dice

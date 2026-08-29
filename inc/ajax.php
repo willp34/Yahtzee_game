@@ -15,6 +15,10 @@
             add_action('wp_ajax_yg_score',[$this,'score']);
             add_action('wp_ajax_nopriv_yg_score',[$this,'score']);
 
+            ///reset_game
+
+            add_action('wp_ajax_yg_reset', [$this, 'reset_game']);
+            add_action('wp_ajax_nopriv_yg_reset', [$this, 'reset_game']);
         }
 
 
@@ -25,12 +29,36 @@
                 session_start();
             }
         }
+        public function reset_game() {
+            $this->check_request();
+
+            unset($_SESSION['yahtzee_game']);
+
+            // Create a new game
+            $_SESSION['yahtzee_game'] = [
+                'dice' => [1,1,1,1,1],
+                'held' => [false,false,false,false,false],
+                'rolls' => 0,
+                'turns' => 0,
+                'used_scores' => [],
+                'possible_scores' => []
+            ];
+
+            wp_send_json_success($_SESSION['yahtzee_game']);
+        }
+
         public function roll()
         {
             $this->check_request();
 
             $game =  YG_Game::load();
 
+
+            if (count($_SESSION['yahtzee_game']['used_scores'] ?? []) >= 13) {
+                wp_send_json_error([
+                    'message' => 'Game Over'
+                ]);
+            }
             if($game->get_rolls() >=3){
                 wp_send_json_error([
                     'message' => 'You have used all three rolls.'
@@ -50,14 +78,20 @@
         public function score(){
 
             check_ajax_referer('yahtzee', 'nonce');
-            $category = sanitize_key($_POST['held']);
+            $category = sanitize_key($_POST['category']);
             $game =  YG_Game::load();
 
+            if (count($_SESSION['yahtzee_game']['used_scores'] ?? []) >= 13) {
+                wp_send_json_error([
+                    'message' => 'Game Over'
+                ]);
+            }
             if(!$game->score_category($category)){
                 wp_send_json_error(['message' => 'Category already used.']);
             }
 
               wp_send_json_success([
+                'turns'           => $game->get_turns(),
                 'dice'            => $game->get_dice(),
                 'held'            => $game->get_held(),
                 'rolls'           => $game->get_rolls(),

@@ -44,6 +44,10 @@ $categories["bottom"] = [
 <div class="scorecard">
 
     <h1>🎲 Yahtzee Scorecard</h1>
+    <p> <strong>Turns : </strong>
+
+    <span id="turns"> <?php echo $turns ; ?>  </span></p>
+
 
     <div class="section">
         <h2>Upper Section</h2>
@@ -63,6 +67,16 @@ $categories["bottom"] = [
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
+                <tfooter>
+                    <tr>
+                        <td>Upper Bonus</td>
+                        <td id="U-bonus">-</td>
+                    </tr>
+                    <tr>
+                        <td>Upper Total</td>
+                        <td id="U-total">-</td>
+                    </tr>
+                </tfooter>
             </table>
         </div>
 
@@ -84,6 +98,17 @@ $categories["bottom"] = [
                     </tr>
                 <?php endforeach; ?>
             </tbody>
+
+            <tfooter>
+                <tr>
+                    <td >Lower Total</td>
+                    <td id="L-total">-</td>
+                </tr>
+                <tr>
+                    <td >Grand Total</td>
+                    <td id="Grand-total">-</td>
+                </tr>
+            </tfooter>
         </table>
     </div>
 

@@ -1,9 +1,19 @@
  class YahtzeeGame
  {
      constructor(){
+         this.messages = document.getElementById('message-dialog');
+         this.resetButton = document.getElementById('yg-reset');
          this.rollButton = document.getElementById('yg-roll');
          this.diceContainer = document.getElementById('dice-board');
          this.rollsDisplay = document.getElementById('rolls');
+         this.turns = document.getElementById('turns');
+
+         //totals
+         this.upper_bonus = document.getElementById('U-bonus');
+         this.upper_total = document.getElementById('U-total');
+         this.lower_total = document.getElementById('L-total');
+         this.grand_total = document.getElementById('Grand-total');
+
          if(!this.rollButton){return ;}
 
          this.diceSymbols={
@@ -17,6 +27,20 @@
     bindEvents(){
 
         this.rollButton.addEventListener('click',() => this.rollDice() );
+
+        this.resetButton.addEventListener('click' , () => this.resetGame());
+
+        jQuery(() => {
+            //alert("Loaded  "+Yahtzee.score_board.used_scores);
+            /*if(!Yahtzee.score_board.possible_scores ||
+                Yahtzee.score_board.used_scores) return;
+           */
+            this.turns.textContent =Yahtzee.turns ;
+            this.updateScorecard({},
+                            Yahtzee.score_board.used_scores ||{})
+
+            this.setTotals(Yahtzee);
+        })
 
         document.querySelectorAll(".hold-checkbox").forEach((check) => {
             check.addEventListener("change", () => {
@@ -49,8 +73,9 @@
     updateScorecard(possibleScore,usedScores){
         document.querySelectorAll('.score-row').forEach(row =>{
             const category = row.dataset.category;
-            const scoreCell  = row.querySelector("score-value");
+            const scoreCell  = row.querySelector(".score-value");
 
+            row.classList.remove("used", "available");
             if(usedScores.hasOwnProperty(category)){
                 row.classList.add("used");
                 scoreCell.textContent = usedScores[category];
@@ -59,6 +84,27 @@
                 scoreCell.textContent = possibleScore[category];
             }
         });
+
+        if (this.isGameOver(usedScores)) {
+            this.rollButton.disabled = true;
+            this.messages.textContent = "🎉 Game Over! All score categories have been filled.";
+        }
+
+
+    }
+
+    setTotals(scoreTotals){
+
+        this.upper_bonus.textContent = scoreTotals.upper_bonus;
+        this.upper_total.textContent = scoreTotals.upper_section;
+        this.lower_total.textContent = scoreTotals.lower_section;
+        this.grand_total.textContent = scoreTotals.grand_total;
+
+    }
+
+    isGameOver(usedScores){
+        return Object.keys(usedScores).length === 13;
+
     }
 
     startAnimation() {
@@ -102,7 +148,7 @@
         })
 
         if(!response.ok){
-            throw new Error('HTTP ${response.status} ') ;
+            throw new Error(`HTTP ${response.status}`); ;
         }
         return response.json();
     }
@@ -115,11 +161,11 @@
                 held: held ? '1' : '0'
             });
             document
-                .getElementById(`die-${this.dataset.die}`)
-                .classList.toggle("held", this.checked);
+                .getElementById(`die-${index}`)
+                .classList.toggle("held", held);
         }
         catch(err){
-            console.error('Hold AJAX error: ',error);
+            console.error('Hold AJAX error: ',err);
         }
     }
 
@@ -142,14 +188,16 @@
                     response.data.possible_scores,
                     response.data.used_scores
                 )
-            this.rollsDisplay.textContent = 3 - response.data.rolls;
-            this.rollButton.disabled = response.data.rolls <3
+            this.rollsDisplay.textContent = 3 - response.data.rolls+ "/3";
+            this.rollButton.disabled = response.data.rolls >=3
         }
         catch(err){
 
             this.stopAnimation();
             this.rollButton.disabled = false;
-            alert('Unable to roll the dice. '+ err);
+
+            //'Unable to roll the dice. '+
+            this.messages.innerHTML = err;
             console.error(err);
         }
         this.rolling = false;
@@ -171,11 +219,34 @@
                 response.data.possible_scores,
                 response.data.used_scores
             )
-            this.rollsDisplay.textContent = 3 ;
+            this.rollsDisplay.textContent = "0 / 3" ;
             this.rollButton.disabled = false;
         } catch(err){
             console.error("Score error:", err);
         }
     }
 
+    async resetGame(){
+        try {
+            const response = await this.ajax("yg_reset");
+
+            if (!response.success) return;
+
+            this.renderDice(response.data.dice, response.data.held);
+
+            // clear all score rows
+            document.querySelectorAll(".score-row").forEach(row => {
+                row.classList.remove("used");
+                row.classList.add("available");
+                row.querySelector(".score-value").textContent = "0";
+            });
+
+            this.rollsDisplay.textContent = 3;
+            this.rollButton.disabled = false;
+            this.messages.textContent = "New game started!";
+        } catch (err) {
+            console.error("Reset error:", err);
+            this.messages.textContent = err.message;
+        }
+    }
 }
