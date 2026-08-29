@@ -16,14 +16,7 @@
 
             <div class="die-wrapper">
 
-                <div class="die" id="die-<?php echo $i; ?>">⚀</div>
-
-                <label>
-                <input type="checkbox"
-                class="hold-checkbox"
-                data-die="<?php echo $i; ?>">
-                Hold
-                </label>
+                <div class="die" ></div>
 
             </div>
 

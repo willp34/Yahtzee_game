@@ -16,12 +16,13 @@
 
          if(!this.rollButton){return ;}
 
-         this.diceSymbols={
-             1: "⚀", 2: "⚁", 3: "⚂",
-             4: "⚃", 5: "⚄", 6: "⚅"
-         };
          this.rolling = false;
          this.animationTimer = null;
+
+         this.rollsLeft =3;
+         this.dice=[];
+         this.held=[false,false,false,false,false];
+
          this.bindEvents();
     }
     bindEvents(){
@@ -36,12 +37,17 @@
                 Yahtzee.score_board.used_scores) return;
            */
             this.turns.textContent =Yahtzee.turns ;
+
+            this.dice = Yahtzee.dice || [1, 1, 1, 1, 1];
+            this.held = Yahtzee.held || [false, false, false, false, false];
+
+            this.renderDice(this.dice, this.held);
             this.updateScorecard({},
                             Yahtzee.score_board.used_scores ||{})
 
             this.setTotals(Yahtzee);
         })
-
+/**
         document.querySelectorAll(".hold-checkbox").forEach((check) => {
             check.addEventListener("change", () => {
                 this.setHeld(check.dataset.die, check.checked)
@@ -49,7 +55,7 @@
 
         });
 
-
+*/
         document.querySelectorAll(".score-row").forEach((row) => {
             row.addEventListener("click", () => this.selectScore(row))
         });
@@ -57,17 +63,47 @@
         }
 
     renderDice(dice, held) {
+        this.diceContainer.innerHTML ='';
         dice.forEach((value, index) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'die-wrapper';
+            const die = document.createElement('div');
+            die.className= 'die';
+            if(held[index]){
+                die.classList.add('held');
+            }
 
-            const die = document.getElementById(`die-${index}`);
-            const check = document.querySelector(
-                `.hold-checkbox[data-die="${index}"]`
-            );
-
-            die.textContent = this.diceSymbols[value];
-            die.classList.toggle("held", held[index]);
-            check.checked = held[index];
+            this.drawDieFace(die,value)
+            wrapper.appendChild(die);
+            wrapper.addEventListener('click', () => this.toggleHold(index)  )
+            this.diceContainer.appendChild(wrapper);
         });
+    }
+
+    drawDieFace(die ,value){
+
+        const pipPositions = {
+            1: [5],
+            2: [1, 9],
+            3: [1, 5, 9],
+            4: [1, 3, 7, 9],
+            5: [1, 3, 5, 7, 9],
+            6: [1, 3, 4, 6, 7, 9]
+        };
+        die.innerHTML ='';
+
+        // create 9 grid cells
+            for(let i=1; i<=9 ; i++){
+                const cell = document.createElement('div');
+                cell.className='pip-cell';
+
+                if(pipPositions[value].includes(i)){
+                    const pip = document.createElement('div');
+                    pip.className = 'pip';
+                    cell.appendChild(pip);
+                }
+                die.appendChild(cell);
+            }
     }
 
     updateScorecard(possibleScore,usedScores){
@@ -109,14 +145,13 @@
 
     startAnimation() {
         this.animationTimer = setInterval(() => {
+
             document.querySelectorAll(".die").forEach((die, index) => {
-                const check = document.querySelector(
-                    `.hold-checkbox[data-die="${index}"]`
-                );
+
                 // Only animate dice that are NOT held
-                if (!check.checked) {
+                if (!this.held[index]) {
                     const random = Math.floor(Math.random() * 6) + 1;
-                    die.textContent = this.diceSymbols[random];
+                    this.drawDieFace(die,random);
                     die.classList.add("rolling");
                 }
 
@@ -130,6 +165,18 @@
         document.querySelectorAll(".die").forEach((die) => {
             die.classList.remove("rolling");
         });
+    }
+
+
+    toggleHold(index){
+
+
+        const held = !this.held[index];
+        this.held[index] = held;
+        this.renderDice(this.dice, this.held);
+
+        this.setHeld(index,held);
+
     }
 
     async ajax(action, data=[]){
@@ -160,9 +207,11 @@
                 die:index,
                 held: held ? '1' : '0'
             });
-            document
-                .getElementById(`die-${index}`)
-                .classList.toggle("held", held);
+            // Update local game state.
+            this.held[index] = held;
+            // Redraw the dice so the held highlight updates.
+            this.renderDice(this.dice, this.held);
+
         }
         catch(err){
             console.error('Hold AJAX error: ',err);
@@ -183,12 +232,15 @@
             if(!response.success){
                 throw new Error(response.data.message);
             }
-            this.renderDice(response.data.dice, response.data.held);
+            this.dice=response.data.dice;
+            this.held =response.data.held;
+            this.renderDice(this.dice, this.held);
             this.updateScorecard(
                     response.data.possible_scores,
                     response.data.used_scores
                 )
             this.rollsDisplay.textContent = 3 - response.data.rolls+ "/3";
+            this.rollsLeft = 3 - response.data.rolls;
             this.rollButton.disabled = response.data.rolls >=3
         }
         catch(err){
@@ -219,6 +271,7 @@
                 response.data.possible_scores,
                 response.data.used_scores
             )
+            this.setTotals(response.data);
             this.rollsDisplay.textContent = "0 / 3" ;
             this.rollButton.disabled = false;
         } catch(err){
@@ -241,7 +294,7 @@
                 row.querySelector(".score-value").textContent = "0";
             });
 
-            this.rollsDisplay.textContent = 3;
+            this.rollsDisplay.textContent = "0 /3";
             this.rollButton.disabled = false;
             this.messages.textContent = "New game started!";
         } catch (err) {
