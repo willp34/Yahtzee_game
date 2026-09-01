@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function(){
-    new YahtzeeGame();
+    new Yahtzee_game();
 });
 
 

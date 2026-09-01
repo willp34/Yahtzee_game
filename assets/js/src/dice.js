@@ -1,6 +1,7 @@
  class YahtzeeGame
  {
      constructor(){
+        /*
          this.messages = document.getElementById('message-dialog');
          this.resetButton = document.getElementById('yg-reset');
          this.rollButton = document.getElementById('yg-roll');
@@ -9,17 +10,25 @@
          this.turns = document.getElementById('turns');
 
          //totals
+
          this.upper_bonus = document.getElementById('U-bonus');
          this.upper_total = document.getElementById('U-total');
          this.lower_total = document.getElementById('L-total');
          this.grand_total = document.getElementById('Grand-total');
 
-         if(!this.rollButton){return ;}
+        this.animationTimer = null;
 
          this.rolling = false;
-         this.animationTimer = null;
-
          this.rollsLeft =3;
+
+        */
+         if(!this.rollButton){return ;}
+
+
+         //
+
+
+
          this.dice=[];
          this.held=[false,false,false,false,false];
 
@@ -62,7 +71,7 @@
 
         }
 
-    renderDice(dice, held) {
+  /*  renderDice(dice, held) {
         this.diceContainer.innerHTML ='';
         dice.forEach((value, index) => {
             const wrapper = document.createElement('div');
@@ -125,8 +134,6 @@
             this.rollButton.disabled = true;
             this.messages.textContent = "🎉 Game Over! All score categories have been filled.";
         }
-
-
     }
 
     setTotals(scoreTotals){
@@ -143,6 +150,7 @@
 
     }
 
+
     startAnimation() {
         this.animationTimer = setInterval(() => {
 
@@ -153,7 +161,8 @@
                     const random = Math.floor(Math.random() * 6) + 1;
                     this.drawDieFace(die,random);
                     die.classList.add("rolling");
-                }
+
+ }
 
             });
 
@@ -169,14 +178,11 @@
 
 
     toggleHold(index){
-
-
         const held = !this.held[index];
         this.held[index] = held;
         this.renderDice(this.dice, this.held);
 
         this.setHeld(index,held);
-
     }
 
     async ajax(action, data=[]){
@@ -199,7 +205,7 @@
         }
         return response.json();
     }
-
+*
     async setHeld(index, held){
 
         try{
@@ -208,10 +214,9 @@
                 held: held ? '1' : '0'
             });
             // Update local game state.
-            this.held[index] = held;
+ //           this.held[index] = held;
             // Redraw the dice so the held highlight updates.
-            this.renderDice(this.dice, this.held);
-
+   //         this.renderDice(this.dice, this.held);
         }
         catch(err){
             console.error('Hold AJAX error: ',err);
@@ -232,16 +237,7 @@
             if(!response.success){
                 throw new Error(response.data.message);
             }
-            this.dice=response.data.dice;
-            this.held =response.data.held;
-            this.renderDice(this.dice, this.held);
-            this.updateScorecard(
-                    response.data.possible_scores,
-                    response.data.used_scores
-                )
-            this.rollsDisplay.textContent = 3 - response.data.rolls+ "/3";
-            this.rollsLeft = 3 - response.data.rolls;
-            this.rollButton.disabled = response.data.rolls >=3
+            this.applyState(response.data);
         }
         catch(err){
 
@@ -264,16 +260,11 @@
                  category :row.dataset.category
             })
 
-             if(!response.success) return;
+             if(response.success) {
+                 this.applyState(response.data);
+                 this.rollButton.disabled =false;
+            }
 
-            this.renderDice(response.data.dice, response.data.held);
-            this.updateScorecard(
-                response.data.possible_scores,
-                response.data.used_scores
-            )
-            this.setTotals(response.data);
-            this.rollsDisplay.textContent = "0 / 3" ;
-            this.rollButton.disabled = false;
         } catch(err){
             console.error("Score error:", err);
         }
@@ -285,15 +276,17 @@
 
             if (!response.success) return;
 
-            this.renderDice(response.data.dice, response.data.held);
-
+            this.dice = response.data.dice;
+            this.held = response.data.held;
+            this.renderDice(this.dice, this.held);
+            this.rollsLeft=3;
             // clear all score rows
-            document.querySelectorAll(".score-row").forEach(row => {
+            /*document.querySelectorAll(".score-row").forEach(row => {
                 row.classList.remove("used");
                 row.classList.add("available");
                 row.querySelector(".score-value").textContent = "0";
             });
-
+            this.updateScorecard([],[]);
             this.rollsDisplay.textContent = "0 /3";
             this.rollButton.disabled = false;
             this.messages.textContent = "New game started!";
@@ -302,4 +295,19 @@
             this.messages.textContent = err.message;
         }
     }
+/*
+    applyState(data){
+        this.dice = data.dice;
+        this.held = data.held;
+        this.renderDice(this.dice, this.held);
+
+        this.updateScorecard(data.possible_scores, data.used_scores);
+        this.setTotals(data);
+
+        if (typeof data.rolls !== "undefined") {
+            this.rollsLeft = 3 - data.rolls;
+            this.rollsDisplay.textContent = `${this.rollsLeft} / 3`;
+            this.rollButton.disabled = this.rollsLeft === 0;
+        }
+    } */
 }

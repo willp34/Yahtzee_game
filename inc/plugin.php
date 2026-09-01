@@ -48,8 +48,31 @@ class YG_Plugin
 
 
         wp_enqueue_script(
+            'yahtzee_game',
+            YG_URL.'assets/js/src/yahtzee-game.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+        wp_enqueue_script(
             'yahtzee_dice',
-            YG_URL.'assets/js/src/dice.js',
+            YG_URL.'assets/js/src/yahtzee-dice.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+
+        wp_enqueue_script(
+            'yahtzee_scorecard_',
+            YG_URL.'assets/js/src/yahtzee-sorecard.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+
+        wp_enqueue_script(
+            'yahtzee_api',
+            YG_URL.'assets/js/src/yahtzee-api.js',
             ['jquery'],
             '1.0',
             true
