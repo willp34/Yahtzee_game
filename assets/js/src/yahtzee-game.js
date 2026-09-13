@@ -51,24 +51,30 @@
 
         async rollDice(){
 
-            if(this.rolling) return;
+            if(this.rolling || this.rollsLeft===0) return;
 
             this.rolling = true;
             this.rollButton.disabled = true;
-            this.dice.startAnimation();
+            this.messages.textContent = "";
+           // this.dice.startAnimation();
             try{
 
                 const response = await this.api.roll();
-                this.dice.stopAnimation();
+                //this.dice.stopAnimation();
                 if(!response.success){
                     throw new Error(response.data.message);
                 }
-                this.applyState(response.data);
-                thids.hasRolledThisTurn =true ;
+                // Animate the dice before applying the new game state.
+                this.dice.animateRoll(response.data.dice, () =>{
+                    this.applyState(response.data);
+                    this.rollButton.disabled= this.rollsLeft === 0;
+                    this.hasRolledThisTurn =true ;
+                })
+
             }
             catch(err){
 
-                this.dice.stopAnimation();
+                //this.dice.stopAnimation();
 
                 //'Unable to roll the dice. '+
                 this.messages.textContent = err;
@@ -145,7 +151,7 @@
                 this.rollsDisplay.textContent = `${this.rollsLeft} `;
                 this.rollButton.disabled = this.rollsLeft === 0;
                 //Player has rolled at least once.
-                this.hasRolledThisTurn = data.rolls>0;
+               // this.hasRolledThisTurn = data.rolls>0;
             }
             if("turns" in data){
                 this.turns.textContent =data.turns;
