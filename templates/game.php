@@ -5,9 +5,11 @@
 
     <div class="roll-information">
         <button id="yg-reset" class="button">Reset Game</button>
-        Rolls :
-
-            <span id="rolls"> <?php echo $rolls ; ?> /3 </span>
+        <div class="roll-counter">
+            <span>Rolls : </span>
+            <strong id="rolls"> </strong>
+            <small> /3</small>
+        </div>
 
     </div>
     <div id="dice-board">

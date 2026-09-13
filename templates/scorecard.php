@@ -42,46 +42,60 @@ $categories["bottom"] = [
 
 ?>
 <div class="scorecard">
-
-    <h1>🎲 Yahtzee Scorecard</h1>
-    <p> <strong>Turns : </strong>
-
-    <span id="turns"> <?php echo $turns ; ?>  </span></p>
+    <div class="scorecard-header">
+        <div>
+            <span class="scorecard-kicker"> DICE GAME </span>
+            <h1>🎲 Yahtzee Scorecard</h1>
+        </div>
+        <div class="turn-counter">
+            <span>Turns : </span>
+            <strong id="turns"> </strong>
+            <small> /13</small>
+        </div>
+    </div>
 
 
     <div class="section">
-        <h2>Upper Section</h2>
-            <table id="score-table">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
+        <div class="section-title">
+            <span>Upper Section</span>
+            <small> Score each number </small>
+        </div>
 
-                <tbody>
+        <table class="score-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+
+            <tbody>
                 <?php foreach ($categories["top"] as $key => $label) : ?>
                     <tr class="score-row" data-category="<?php echo esc_attr($key); ?>">
                         <td><?php echo esc_html($label); ?></td>
                         <td class="score-value">-</td>
                     </tr>
                 <?php endforeach; ?>
-                </tbody>
-                <tfooter>
-                    <tr>
-                        <td>Upper Bonus</td>
-                        <td id="U-bonus">-</td>
-                    </tr>
-                    <tr>
-                        <td>Upper Total</td>
-                        <td id="U-total">-</td>
-                    </tr>
-                </tfooter>
-            </table>
-        </div>
+            </tbody>
+            <tfooter>
+                <tr>
+                    <td>Upper Bonus</td>
+                    <td id="U-bonus">-</td>
+                </tr>
+                <tr>
+                    <td>Upper Total</td>
+                    <td id="U-total">-</td>
+                </tr>
+            </tfooter>
+        </table>
+    </div>
 
     <div class="section">
-        <h2>Lower Section</h2>
+        <div class="section-title">
+            <span>Lower Section</span>
+            <small> Score each number </small>
+        </div>
+
         <table id="score-table">
             <thead>
                 <tr>

@@ -46,7 +46,12 @@ class YG_Plugin
             '1.0'
         );
 
-
+        wp_enqueue_style(
+            'yahtzee_design',
+            YG_URL.'assets/css/yahtzee-game.css',
+            [],
+            '1.0'
+        );
         wp_enqueue_script(
             'yahtzee_game',
             YG_URL.'assets/js/src/yahtzee-game.js',
@@ -54,6 +59,7 @@ class YG_Plugin
             '1.0',
             true
         );
+
         wp_enqueue_script(
             'yahtzee_dice',
             YG_URL.'assets/js/src/yahtzee-dice.js',

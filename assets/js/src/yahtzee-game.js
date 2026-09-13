@@ -24,6 +24,7 @@
 
         loadInitialState(){
 
+            this.rollsDisplay.textContent = 0; //Yahtzee.rolls;
             this.turns.textContent =Yahtzee.turns ;
             this.dice.clickHandler = ( index => this.toggleHold(index));
             this.dice.setState(
@@ -108,7 +109,7 @@
 
                 if (!response.success) return;
                 this.applyState(response.data);
-                this.rollsDisplay.textContent = "0 /3";
+                this.rollsDisplay.textContent = "0 ";
                 this.hasRolledThisTurn =false;
 
                 this.messages.textContent = "New game started!";
@@ -141,14 +142,18 @@
 
             if ("rolls" in data) {
                 this.rollsLeft = 3 - data.rolls;
-                this.rollsDisplay.textContent = `${this.rollsLeft} / 3`;
+                this.rollsDisplay.textContent = `${this.rollsLeft} `;
                 this.rollButton.disabled = this.rollsLeft === 0;
                 //Player has rolled at least once.
                 this.hasRolledThisTurn = data.rolls>0;
             }
+            if("turns" in data){
+                this.turns.textContent =data.turns;
+            }
             if (this.scorecard.isGameOver(data.used_scores)) {
                 this.rollButton.disabled = true;
                 this.messages.textContent = "🎉 Game Over!";
+
             }
         }
     }

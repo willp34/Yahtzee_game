@@ -97,11 +97,11 @@
                 'rolls'           => $game->get_rolls(),
                 'possible_scores' => $game->possible_scores(),
                 'used_scores'     => $game->get_scores(),
-                'upper_total'     => $game->get_upper_total(),
-                'bonus'           => $game->get_bonus(),
-                'lower_total'     => $game->get_lower_total(),
-                'grand_total'     => $game->get_grand_total()
-            ]);
+                'upper_bonus'       => $game->get_bonus(),
+                'upper_section' => $game->get_upper_total(),
+                'lower_section' => $game->get_lower_total(),
+                'grand_total' => $game->get_grand_total()
+                ]);
         }
         public function hold(){
             $this->check_request();

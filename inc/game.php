@@ -20,7 +20,7 @@ class YG_Game
         $this->dice = [1,1,1,1,1];
         $this->held = [false,false,false,false,false];
         $this->rolls = 0 ;
-        $this->turns = 13;
+        $this->turns = 0;
     }
 
     private static function new_game(){
@@ -49,7 +49,7 @@ class YG_Game
         $game->held = $data['held'] ?? [false,false,false,false,false];
         $game->rolls = $data['rolls'] ?? 0;
         $game->scores = $data['scores'] ?? [] ;
-        $game->turns = $data['turnss'] ?? 0;
+        $game->turns = $data['turns'] ?? 0;
         return $game;
     }
 
@@ -101,7 +101,7 @@ class YG_Game
         $this->held = [false, false, false, false, false];
         // Optional: clear dice ready for next roll.
         $this->dice = [1,1,1,1,1];
-        $this->turns--;
+        $this->turns++;
         $this->save();
 
         return true;
