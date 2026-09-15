@@ -50,9 +50,7 @@
         public function roll()
         {
             $this->check_request();
-
             $game =  YG_Game::load();
-
 
             if (count($_SESSION['yahtzee_game']['used_scores'] ?? []) >= 13) {
                 wp_send_json_error([
@@ -64,13 +62,13 @@
                     'message' => 'You have used all three rolls.'
                 ]);
             }
-
             $game->roll();
             wp_send_json_success([
                 'dice' => $game->get_dice(),
                 'held' => $game->get_held(),
                 'rolls' => $game->get_rolls(),
-                'possible_scores' => $game->possible_scores(),
+                'points_feature' => $game->possible_scores(true),
+                'possible_scores' => $game->possible_scores(true),
                 'used_scores' => $game->get_scores()
             ]);
         }
@@ -95,7 +93,7 @@
                 'dice'            => $game->get_dice(),
                 'held'            => $game->get_held(),
                 'rolls'           => $game->get_rolls(),
-                'possible_scores' => $game->possible_scores(),
+                'possible_scores' => $game->possible_scores(true),
                 'used_scores'     => $game->get_scores(),
                 'upper_bonus'       => $game->get_bonus(),
                 'upper_section' => $game->get_upper_total(),

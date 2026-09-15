@@ -1,4 +1,13 @@
 //Dice Implementation
+
+const Positions = {
+    1: [5],
+    2: [1, 9],
+    3: [1, 5, 9],
+    4: [1, 3, 7, 9],
+    5: [1, 3, 5, 7, 9],
+    6: [1, 3, 4, 6, 7, 9]
+};
     class YahtzeeDice{
         constructor(container){
             this.container = container;
@@ -8,8 +17,8 @@
             this.clickHandler = null;
 
             // Rolling sound
-            this.rollSound = new Audio("sounds/dice-roll.mp3");
-            this.rollSound.volume = 0.4;
+           // this.rollSound = new Audio("sounds/dice-roll.mp3");
+            //this.rollSound.volume = 0.4;
 
         }
         setState(dice, held){
@@ -65,7 +74,7 @@
                    currentDice[index] = Math.floor(Math.Random()*6)+1;
                 });
                 this.dice = [...currentDice];
-                this.render(null,true);
+                this.render(this.clickHandler,true);
             },55);
 
             // Stop each die one by one
@@ -74,7 +83,7 @@
                 setTimeout(() => {
                     currentDice[index] = finalDice[index];
                     this.dice =[...currentDice];
-                    this.render(onClick = this.clickHandler);
+                    this.render(this.clickHandler);
                     const die = this.container.children[index].querySelector(".die");
                     die.classList.add("land");
 
@@ -97,14 +106,6 @@
                 onFinish?.();
             }
         }
-const Positions = {
-                1: [5],
-                2: [1, 9],
-                3: [1, 5, 9],
-                4: [1, 3, 7, 9],
-                5: [1, 3, 5, 7, 9],
-                6: [1, 3, 4, 6, 7, 9]
-            };
         drawFace(die ,value){
 
             die.innerHTML ='';

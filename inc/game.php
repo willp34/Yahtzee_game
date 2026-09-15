@@ -110,9 +110,9 @@ class YG_Game
 
         //ScoreCard
 
-        public function possible_scores(): array
+        public function possible_scores($valid_Scores=false): array
         {
-            return [
+            $scores = [
                 'ones'           => ScoreCard::ones($this->dice),
                 'twos'           => ScoreCard::twos($this->dice),
                 'threes'         => ScoreCard::threes($this->dice),
@@ -127,6 +127,11 @@ class YG_Game
                 'yahtzee'        => ScoreCard::yahtzee($this->dice),
                 'chance'         => ScoreCard::chance($this->dice),
             ];
+            if($valid_Scores){
+                arsort($scores);
+                return array_filter($scores , fn($value) => $value>0) ;
+            }
+            return $scores;
         }
 
 

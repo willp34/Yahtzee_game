@@ -8,7 +8,7 @@
             this.grandTotal = document.getElementById('Grand-total');
         }
 
-        update(possible,used){
+    update(possible,used){
 
             document.querySelectorAll('.score-row').forEach(row =>{
                 const category = row.dataset.category;
@@ -19,9 +19,13 @@
                 if(used.hasOwnProperty(category)){
                     row.classList.add("used");
                     scoreCell.textContent = used[category];
-                }else{
+                }else if(possible.hasOwnProperty(category)){
                     row.classList.add("available");
                     scoreCell.textContent = possible[category];
+                }
+                else{
+
+                    scoreCell.textContent = 0;
                 }
             });
 
