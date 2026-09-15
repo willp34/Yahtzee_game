@@ -1,4 +1,12 @@
 //Dice Implementation
+const POSITIONS = {
+    1: [5],
+    2: [1, 9],
+    3: [1, 5, 9],
+    4: [1, 3, 7, 9],
+    5: [1, 3, 5, 7, 9],
+    6: [1, 3, 4, 6, 7, 9]
+};
     class YahtzeeDice{
         constructor(container){
             this.container = container;
@@ -8,8 +16,8 @@
             this.clickHandler = null;
 
             // Rolling sound
-            this.rollSound = new Audio("sounds/dice-roll.mp3");
-            this.rollSound.volume = 0.4;
+           // this.rollSound = new Audio("sounds/dice-roll.mp3");
+            //this.rollSound.volume = 0.4;
 
         }
         setState(dice, held){
@@ -50,22 +58,22 @@
             //Small vibration on mobile
             if(navigator.vibrate) navigator.vibrate(20);
             // play rolling sound
-            this.rollSound.currentTime = 0;
-            this.rollSound.play().catch(() =>{});
+            //this.rollSound.currentTime = 0;
+            //this.rollSound.play().catch(() =>{});
             const currentDice = [...this.dice];
 
             const rollingDice = this.held
                 .map((held,i) => held ? null :i)
                 .filter(i => i !== null );
             // Random stop order feels more realistic
-            rollingDice.sort(() => Math.Random() - 0.5);
+            rollingDice.sort(() => Math.random() - 0.5);
             // Rapidly change values while rolling
             this.timer = setInterval(() => {
                 rollingDice.forEach(index =>{
-                   currentDice[index] = Math.floor(Math.Random()*6)+1;
+                   currentDice[index] = Math.floor(Math.random()*6)+1;
                 });
                 this.dice = [...currentDice];
-                this.render(null,true);
+                this.render(this.clickHandler,true);
             },55);
 
             // Stop each die one by one
@@ -74,7 +82,7 @@
                 setTimeout(() => {
                     currentDice[index] = finalDice[index];
                     this.dice =[...currentDice];
-                    this.render(onClick = this.clickHandler);
+                    this.render(this.clickHandler);
                     const die = this.container.children[index].querySelector(".die");
                     die.classList.add("land");
 
@@ -97,14 +105,7 @@
                 onFinish?.();
             }
         }
-const Positions = {
-                1: [5],
-                2: [1, 9],
-                3: [1, 5, 9],
-                4: [1, 3, 7, 9],
-                5: [1, 3, 5, 7, 9],
-                6: [1, 3, 4, 6, 7, 9]
-            };
+
         drawFace(die ,value){
 
             die.innerHTML ='';
@@ -114,7 +115,7 @@ const Positions = {
                 const cell = document.createElement('div');
                 cell.className='pip-cell';
 
-                if(Positions[value].includes(i)){
+                if(POSITIONS[value].includes(i)){
                     const pip = document.createElement('div');
                     pip.className = 'pip';
                     cell.appendChild(pip);
