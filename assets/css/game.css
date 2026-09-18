@@ -115,6 +115,11 @@ h2 {
 
 
 
+
+
+
+
+
 /* Sore rows
  */
 .score-row {
@@ -134,6 +139,13 @@ h2 {
 .score-row.used {
     background: #d6d6d6;
     color: #777;
+    cursor: not-allowed;
+}
+
+
+.score-row.zero {
+    background: #f3f4f6;
+    color: #9ca3af;
     cursor: not-allowed;
 }
 

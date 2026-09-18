@@ -1,3 +1,4 @@
+
 <div id="yahtzee-game">
     <div id="message-dialog" class='notice notice-error'> </div>
     <h2>Yahtzee </h2>

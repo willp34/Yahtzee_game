@@ -128,7 +128,7 @@ class YG_Game
                 'chance'         => ScoreCard::chance($this->dice),
             ];
             if($valid_Scores){
-                arsort($scores);
+                //arsort($scores);
                 return array_filter($scores , fn($value) => $value>0) ;
             }
             return $scores;

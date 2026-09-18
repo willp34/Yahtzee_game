@@ -39,6 +39,13 @@ class YG_Plugin
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
+        wp_enqueue_script(
+            'lucide',
+            'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js',
+            [],
+            '1.46.0',
+            true
+        );
         wp_enqueue_style(
             'yahtzee',
             YG_URL.'assets/css/game.css',
@@ -96,6 +103,7 @@ class YG_Plugin
             'yahtzee',
             'Yahtzee',
             [
+                'initLucide' => true,
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('yahtzee'),
                 'score_board' =>  [

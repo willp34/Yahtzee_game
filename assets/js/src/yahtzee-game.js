@@ -25,14 +25,18 @@
         loadInitialState(){
 
             this.rollsDisplay.textContent = 0; //Yahtzee.rolls;
+            this.messages.style.display = "none";
             this.turns.textContent =Yahtzee.turns ;
             this.dice.clickHandler = ( index => this.toggleHold(index));
             this.dice.setState(
                 Yahtzee.dice || [1, 1, 1, 1, 1],
                 Yahtzee.held || [false, false, false, false, false]
             )
-            this.scorecard.update({},
-                                 Yahtzee.score_board.used_scores ||{})
+            this.scorecard.update(
+                            {},
+                            Yahtzee.score_board.used_scores ||{},
+                           (row) => this.selectScore(row)
+                                  );
 
             this.scorecard.setTotals(Yahtzee);
         }
@@ -43,14 +47,14 @@
 
             this.resetButton.addEventListener('click' , () => this.resetGame());
 
-            document.querySelectorAll(".score-row").forEach((row) => {
+            /*document.querySelectorAll("#score-card-body tr").forEach((row) => {
                 row.addEventListener("click", () => this.selectScore(row))
-            });
+            });*/
 
         }
 
         async rollDice(){
-
+            this.messages.style.display = "none";
             if(this.rolling || this.rollsLeft===0) return;
 
             this.rolling = true;
@@ -88,10 +92,14 @@
         async selectScore(row){
 
             if (!this.hasRolledThisTurn) {
+
+                    this.messages.style.display = "block";
                     this.messages.textContent = "Roll the dice first!";
                     return;
                 }
-            if(!row.classList.contains("available")) return ;
+            if(!row.classList.contains("score-available") &&
+                !row.classList.contains("score-best")
+            ) return ;
 
             try{
                 const response = await this.api.score(
@@ -117,10 +125,12 @@
                 this.applyState(response.data);
                 this.rollsDisplay.textContent = "0 ";
                 this.hasRolledThisTurn =false;
-
+                this.messages.style.display = "block";
                 this.messages.textContent = "New game started!";
             } catch (err) {
                 console.error("Reset error:", err);
+
+                this.messages.style.display = "block";
                 this.messages.textContent = err.message;
             }
         }
@@ -142,7 +152,9 @@
 
             this.scorecard.update(
                 data.possible_scores,
-                data.used_scores);
+                data.used_scores,
+                (row) => this.selectScore(row)
+            );
 
             this.scorecard.setTotals(data);
 
@@ -158,6 +170,9 @@
             }
             if (this.scorecard.isGameOver(data.used_scores)) {
                 this.rollButton.disabled = true;
+
+
+                this.messages.style.display = "block";
                 this.messages.textContent = "🎉 Game Over!";
 
             }

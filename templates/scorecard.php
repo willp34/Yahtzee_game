@@ -41,6 +41,13 @@ $categories["bottom"] = [
 
 
 ?>
+<div id="best-move-banner" class="best-move" style="display:none;">
+    <span class="star">⭐</span>
+<div>
+    <strong>Best Move</strong>
+    <div id="best-move-text"></div>
+    </div>
+</div>
 <div class="scorecard">
     <div class="scorecard-header">
         <div>
@@ -54,40 +61,33 @@ $categories["bottom"] = [
         </div>
     </div>
 
-
+<table id="score-card-body"></table>
+<div>
     <div class="section">
         <div class="section-title">
             <span>Upper Section</span>
             <small> Score each number </small>
         </div>
+        <?php foreach ($categories["top"] as $key => $label) : ?>
 
-        <table class="score-table">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
+            <div class="score-row" data-category="<?php echo esc_attr($key); ?>">
+                <i data-lucide="circle" class="score-icon"></i>
+                <span><?php echo esc_html($label); ?></span>
+                <span class="score-value">-</span>
+            </div>
 
-            <tbody>
-                <?php foreach ($categories["top"] as $key => $label) : ?>
-                    <tr class="score-row" data-category="<?php echo esc_attr($key); ?>">
-                        <td><?php echo esc_html($label); ?></td>
-                        <td class="score-value">-</td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-            <tfooter>
-                <tr>
-                    <td>Upper Bonus</td>
-                    <td id="U-bonus">-</td>
-                </tr>
-                <tr>
-                    <td>Upper Total</td>
-                    <td id="U-total">-</td>
-                </tr>
-            </tfooter>
-        </table>
+        <?php endforeach; ?>
+
+            <div class="score-footer">
+                <div>
+                    <span>Upper Bonus<span>
+                    <span id="U-bonus">-</span>
+                </div>
+                <div>
+                    <span>Upper Total</span>
+                    <span id="U-total">-</span>
+                </div>
+            </div>
     </div>
 
     <div class="section">
@@ -96,34 +96,24 @@ $categories["bottom"] = [
             <small> Score each number </small>
         </div>
 
-        <table id="score-table">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
+        <?php foreach ($categories["bottom"] as $key => $label) : ?>
 
-            <tbody>
-                <?php foreach ($categories["bottom"] as $key => $label) : ?>
-                    <tr class="score-row" data-category="<?php echo esc_attr($key); ?>">
-                        <td><?php echo esc_html($label); ?></td>
-                        <td class="score-value">-</td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
+        <div class="score-row" data-category="<?php echo esc_attr($key); ?>">
+            <i data-lucide="circle" class="score-icon"></i>
+            <span><?php echo esc_html($label); ?></span>
+            <span class="score-value">-</span>
+        </div>
+        <?php endforeach; ?>
 
-            <tfooter>
-                <tr>
-                    <td >Lower Total</td>
-                    <td id="L-total">-</td>
-                </tr>
-                <tr>
-                    <td >Grand Total</td>
-                    <td id="Grand-total">-</td>
-                </tr>
-            </tfooter>
-        </table>
+
+        <div class="score-footer">
+            <span >Lower Total</span>
+            <span id="L-total">-</span>
+        </div>
+        <div class="score-footer">
+            <span>Grand Total</span>
+            <span id="Grand-total">-</span>
+        </div>
     </div>
-
+</div>
 </div>
