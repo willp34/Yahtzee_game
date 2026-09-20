@@ -38,4 +38,9 @@
         reset(){
             return this.request("yg_reset");
         }
+
+        statistics(){
+
+            return this.request("yg_statistics");
+        }
     }

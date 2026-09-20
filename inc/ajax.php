@@ -19,6 +19,11 @@
 
             add_action('wp_ajax_yg_reset', [$this, 'reset_game']);
             add_action('wp_ajax_nopriv_yg_reset', [$this, 'reset_game']);
+
+            //statistics
+
+            add_action('wp_ajax_yg_statistics', [$this, 'yahtzee_statistics']);
+            add_action('wp_ajax_nopriv_yg_statistics', [$this, 'yahtzee_statistics']);
         }
 
 
@@ -67,7 +72,6 @@
                 'dice' => $game->get_dice(),
                 'held' => $game->get_held(),
                 'rolls' => $game->get_rolls(),
-                'points_feature' => $game->possible_scores(true),
                 'possible_scores' => $game->possible_scores(true),
                 'used_scores' => $game->get_scores()
             ]);
@@ -125,5 +129,22 @@
             wp_send_json_success([
                 'held' => $game->get_held(),
                 ]);
+        }
+
+
+
+        /*
+         * Render single Job
+         *
+         */
+        public function yahtzee_statistics() {
+
+
+             $contents = "<p>Statistics</p>";
+
+
+             wp_send_json_success([
+                 'body' => $contents,
+             ]);
         }
     }

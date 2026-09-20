@@ -11,7 +11,7 @@
             <strong id="rolls"> </strong>
             <small> /3</small>
         </div>
-
+         <button id="yg-statistics" class="button  yg-open-modal">Game Stats</button>
     </div>
     <div id="dice-board">
 

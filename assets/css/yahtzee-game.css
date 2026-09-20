@@ -217,6 +217,52 @@ box-shadow:
     cursor: not-allowed;
 }
 */
+/* =========================================================
+ * Progress card
+ * ========================================================= */
+
+
+.bonus-progress-card{
+  background:#f8fafc;
+  border:2px solid #d1d5db;
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:12px;
+}
+
+.bonus-header{
+  display:flex;
+  justify-content:space-between;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+.bonus-progress-bar{
+  width:100%;
+  height:12px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+#bonus-progress-fill{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#22c55e,#16a34a);
+  transition:width .35s ease;
+}
+
+.bonus-status{
+  text-align:center;
+  margin-top:8px;
+  font-size:0.9rem;
+  font-weight:600;
+  color:#475569;
+}
+
+.bonus-earned{
+  color:#15803d;
+}
 
 /* =========================================================
  * Best Move
@@ -459,13 +505,13 @@ score-row.selected td:first-child::before {
  ========================================================= */
 
 
-.total-row td {
+.total-row,.total-row td {
   border-top: 2px solid var(--ink);
   border-bottom: 0 !important;
   font-weight: 900 !important;
 }
 
-.grand-total td {
+.grand-total, .grand-total td {
   padding-top: 12px !important;
   padding-bottom: 12px !important;
   border-top: 3px double var(--ink);
@@ -474,7 +520,7 @@ score-row.selected td:first-child::before {
   font-weight: 900 !important;
 }
 
-.grand-total td {
+.grand-total, .grand-total td {
   font-size: 21px !important;
 }
 
@@ -483,3 +529,37 @@ score-row.selected td:first-child::before {
  TOTALS
  ========================================================= */
 
+.score-totals-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-radius:12px;
+  padding:10px 0px;
+  margin-bottom:12px;
+}
+
+
+.score-total-box {
+  flex: 0 0 calc(50% - 5px);
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 14px;
+  border-radius: 10px;
+
+  background: var(--card-bg, #fff);
+  border:2px solid #d1d5db;
+}
+
+.score-total-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.score-total-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
