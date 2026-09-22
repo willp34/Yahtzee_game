@@ -59,3 +59,84 @@
  </tr>
  </tfooter>
  </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div>
+ <div class="section">
+ <div class="section-title">
+ <span>Upper Section</span>
+ <small> Score each number </small>
+ </div>
+ <?php foreach ($categories["top"] as $key => $label) : ?>
+
+ <div class="score-row" data-category="<?php echo esc_attr($key); ?>">
+ <i data-lucide="circle" class="score-icon"></i>
+ <span><?php echo esc_html($label); ?></span>
+ <span class="score-value">-</span>
+ </div>
+
+ <?php endforeach; ?>
+
+ <div class="score-footer">
+ <div>
+ <span>Upper Bonus<span>
+ <span id="U-bonus">-</span>
+ </div>
+ <div>
+ <span>Upper Total</span>
+ <span id="U-total">-</span>
+ </div>
+ </div>
+ </div>
+
+ <div class="section">
+ <div class="section-title">
+ <span>Lower Section</span>
+ <small> Score each number </small>
+ </div>
+
+ <?php foreach ($categories["bottom"] as $key => $label) : ?>
+
+ <div class="score-row" data-category="<?php echo esc_attr($key); ?>">
+ <i data-lucide="circle" class="score-icon"></i>
+ <span><?php echo esc_html($label); ?></span>
+ <span class="score-value">-</span>
+ </div>
+ <?php endforeach; ?>
+
+
+ <div class="score-footer">
+ <span >Lower Total</span>
+ <span id="L-total">-</span>
+ </div>
+ <div class="score-footer">
+ <span>Grand Total</span>
+ <span id="Grand-total">-</span>
+ </div>
+ </div>
+ </div>
+ </div>

@@ -134,27 +134,4 @@ class YahtzeeDice{
         //this.setHeld(index,held);
     }
 
-    startAnimation() {
-        this.timer = setInterval(() => {
-
-            document.querySelectorAll(".die").forEach((die, index) => {
-
-                // Only animate dice that are NOT held
-                if (!this.held[index]) {
-                    const random = Math.floor(Math.random() * 6) + 1;
-                    this.dice[index] = random
-                    this.drawFace(die,random);
-                    die.classList.add("rolling");
-                }
-            });
-        }, 75);
-    }
-
-    stopAnimation() {
-        clearInterval(this.timer);
-        document.querySelectorAll(".die").forEach((die) => {
-            die.classList.remove("rolling");
-        });
-    }
-
 }

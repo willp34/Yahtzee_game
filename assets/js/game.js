@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function(){
         lucide.createIcons();
     }
     new Yahtzee_game();
+    new Yahtzee_modal();
 
 
 });

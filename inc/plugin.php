@@ -66,7 +66,13 @@ class YG_Plugin
             '1.0',
             true
         );
-
+        wp_enqueue_script(
+            'yahtzee_modal',
+            YG_URL.'assets/js/src/yahtzee-statistics-modal.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
         wp_enqueue_script(
             'yahtzee_dice',
             YG_URL.'assets/js/src/yahtzee-dice.js',

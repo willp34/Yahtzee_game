@@ -2,9 +2,7 @@
     class Yahtzee_game {
 
         constructor(){
-            //Modal
-            this.modal = document.getElementById('rjf-modal');
-            this.modalBody = document.getElementById('rjf-job-content');
+
             this.api = new YahtzeeAPI();
             this.dice = new YahtzeeDice(
                 document.getElementById('dice-board')
@@ -20,6 +18,14 @@
             this.rolling = false;
             this.rollsLeft =3;
             this.hasRolledThisTurn = false;
+
+            this.diceStats = {
+                totalRolls: 0,
+                yahtzees: 0,
+                fullHouses: 0,
+                smallStraights: 0,
+                largeStraights: 0
+            };
 
             this.bindEvents();
             this.loadInitialState();
@@ -56,41 +62,16 @@
             this.resetButton.addEventListener('click' , () => this.resetGame());
 
 
-            //modal panel
-            jQuery(document).on('click', '.yg-open-modal', () =>this.statistics_screen())
             /*document.querySelectorAll("#score-card-body tr").forEach((row) => {
                 row.addEventListener("click", () => this.selectScore(row))
             });*/
 
         }
 
-        async statistics_screen(){
-            jQuery("#rjf-form").remove();
-             jQuery(this.modalBody).html("Loading !!!!");
-                // Open modal
-                jQuery(this.modal).addClass('active');
 
-                try{
-
-                    const response = await this.api.statistics();
-                    //this.dice.stopAnimation();
-
-                    if(!response.success){
-                        throw new Error(response.data.message);
-                    }
-                    this.modalBody.innerHTML = response.data.body
-
-
-                }
-                catch(err){
-                    alert(err)
-                    this.messages.textContent = err;
-                }
-                finally{
-
-                }
-        }
         async rollDice(){
+            this.diceStats.totalRolls++;
+
             this.messages.style.display = "none";
             if(this.rolling || this.rollsLeft===0) return;
 
@@ -111,6 +92,7 @@
                     this.rollButton.disabled= this.rollsLeft === 0;
                     this.hasRolledThisTurn =true ;
                 })
+                this.updateDiceStatistics(response.data.dice);
 
             }
             catch(err){
@@ -134,10 +116,13 @@
                     this.messages.textContent = "Roll the dice first!";
                     return;
                 }
-            if(!row.classList.contains("score-available") &&
+            /*
+             * Not needed
+             * if(!row.classList.contains("score-available") &&
                 !row.classList.contains("score-best")
             ) return ;
-
+        */
+            if(row.classList.contains("score-used")) return ;
             try{
                 const response = await this.api.score(
                     row.dataset.category
@@ -218,5 +203,57 @@
                 this.messages.textContent = "🎉 Game Over!";
 
             }
+        }
+
+        updateDiceStatistics(dice) {
+
+            const counts = {};
+
+            dice.forEach(value => {
+                counts[value] = (counts[value] || 0) + 1;
+            });
+
+            const values = Object.values(counts);
+
+            // Yahtzee
+            if (values.includes(5)) {
+                this.diceStats.yahtzees++;
+            }
+
+            // Full House
+            if (values.includes(3) && values.includes(2)) {
+                this.diceStats.fullHouses++;
+            }
+
+            // Small Straight
+            if (this.hasSmallStraight(dice)) {
+                this.diceStats.smallStraights++;
+            }
+
+            // Large Straight
+            if (this.hasLargeStraight(dice)) {
+                this.diceStats.largeStraights++;
+            }
+        }
+        hasSmallStraight(dice) {
+
+            const unique = [...new Set(dice)].sort();
+
+            const straights = [
+                [1,2,3,4],
+                [2,3,4,5],
+                [3,4,5,6]
+            ];
+
+            return straights.some(straight =>
+            straight.every(num => unique.includes(num))
+            );
+        }
+
+        hasLargeStraight(dice) {
+
+            const sorted = [...new Set(dice)].sort().join(",");
+
+            return sorted === "1,2,3,4,5" || sorted === "2,3,4,5,6";
         }
     }

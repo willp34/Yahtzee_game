@@ -72,7 +72,7 @@
                 'dice' => $game->get_dice(),
                 'held' => $game->get_held(),
                 'rolls' => $game->get_rolls(),
-                'possible_scores' => $game->possible_scores(true),
+                'possible_scores' => $game->possible_scores(),
                 'used_scores' => $game->get_scores()
             ]);
         }
@@ -97,7 +97,7 @@
                 'dice'            => $game->get_dice(),
                 'held'            => $game->get_held(),
                 'rolls'           => $game->get_rolls(),
-                'possible_scores' => $game->possible_scores(true),
+                'possible_scores' => $game->possible_scores(),
                 'used_scores'     => $game->get_scores(),
                 'upper_bonus'       => $game->get_bonus(),
                 'upper_section' => $game->get_upper_total(),
@@ -134,15 +134,16 @@
 
 
         /*
-         * Render single Job
+         * Render statistics
          *
          */
         public function yahtzee_statistics() {
 
+            ob_start();
+            // Load template file
+            include plugin_dir_path(dirname(__FILE__)) . 'templates/statistics.php';
 
-             $contents = "<p>Statistics</p>";
-
-
+            $contents = ob_get_clean();
              wp_send_json_success([
                  'body' => $contents,
              ]);
