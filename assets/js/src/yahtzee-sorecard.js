@@ -10,6 +10,10 @@
             this.bonusFill = document.getElementById('bonus-progress-fill');
             this.bonusText = document.getElementById('bonus-progress-text');
             this.bonusStatus = document.getElementById('bonus-progress-status');
+
+            //STATISTICS
+
+            this.YahtzeeStats = new Yahtzee_statistics();
         }
         categoryLabel(key) {
 
@@ -116,8 +120,14 @@
                this.updateBonusProgress(upperScore);
             }
 
-            if(this.isGameOver(data.score_board.used_scores ||data.score_board.used_scores)){
+            if( this.isGameOver(data.used_scores ) ){
                 console.log("GAME OVER POPULATE STATISTICS");
+
+                this.YahtzeeStats.saveStatistics(data.grand_total,
+                                                 data.used_scores,
+                                                 upperScore >= 63
+                                                 )
+
             }
 
         }
@@ -167,7 +177,7 @@
                 row.querySelector(".score-value").textContent = "0";
             });
         }
-        isGameOver(used){
+        isGameOver(used= {} ){
             return Object.keys(used).length === 13;
 
         }

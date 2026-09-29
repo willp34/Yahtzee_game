@@ -2,10 +2,13 @@
     class Yahtzee_modal {
 
         constructor(){
+            this.messages = document.getElementById('message-dialog');
+
             //Modal
             this.modal = document.getElementById('rjf-modal');
             this.modalBody = document.getElementById('rjf-job-content');
             this.api = new YahtzeeAPI();
+
             this.bindEvents();
         }
 
@@ -30,12 +33,19 @@
                 if(!response.success){
                     throw new Error(response.data.message);
                 }
-                this.modalBody.innerHTML = response.data.body
 
+                this.modalBody.innerHTML = response.data.body;
+
+                //STATISTICS
+
+                this.YahtzeeStats = new Yahtzee_statistics();
+                this.YahtzeeStats.loadStatistics();
 
             }
             catch(err){
-                alert(err)
+                alert(err);
+
+                this.messages.style.display = "block";
                 this.messages.textContent = err;
             }
             finally{

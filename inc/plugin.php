@@ -59,6 +59,13 @@ class YG_Plugin
             [],
             '1.0'
         );
+
+        wp_enqueue_style(
+            'yahtzee_statistics',
+            YG_URL.'assets/css/yahtzee-statistics.css',
+            [],
+            '1.0'
+        );
         wp_enqueue_script(
             'yahtzee_game',
             YG_URL.'assets/js/src/yahtzee-game.js',
@@ -69,6 +76,13 @@ class YG_Plugin
         wp_enqueue_script(
             'yahtzee_modal',
             YG_URL.'assets/js/src/yahtzee-statistics-modal.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+        wp_enqueue_script(
+            'yahtzee_stats',
+            YG_URL.'assets/js/src/yahtzee-statistics.js',
             ['jquery'],
             '1.0',
             true
