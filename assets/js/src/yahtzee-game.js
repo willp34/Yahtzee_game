@@ -9,6 +9,7 @@
             );
             this.scorecard = new YahtzeeScorecard();
 
+            this.acheivements = new Yahtzee_achievements();
             this.rollButton = document.getElementById('yg-roll');
             this.resetButton = document.getElementById('yg-reset');
             this.rollsDisplay = document.getElementById('rolls');
@@ -131,6 +132,10 @@
                 if(!response.success) return;
 
                 this.applyState(response.data);
+                this.acheivements.checkAcheivements(
+                    row.dataset.category,
+                    response.data
+                );
                 // Update totals and bonus progress here.
                 this.scorecard.setTotals(response.data);
                 this.hasRolledThisTurn =false;

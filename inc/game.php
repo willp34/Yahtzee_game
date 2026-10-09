@@ -160,6 +160,9 @@ class YG_Game
     /* ----------------------Helper functions-------------------------------*/
 
 
+    public function gameOver(){
+        return $this->turns == 13 ? true : false ;
+    }
     public function get_scores(): array
     {
         return $this->scores;

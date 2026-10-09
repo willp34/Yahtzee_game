@@ -102,7 +102,8 @@
                 'upper_bonus'       => $game->get_bonus(),
                 'upper_section' => $game->get_upper_total(),
                 'lower_section' => $game->get_lower_total(),
-                'grand_total' => $game->get_grand_total()
+                'grand_total' => $game->get_grand_total(),
+                'gameOver' => $game->gameOver()
                 ]);
         }
         public function hold(){
