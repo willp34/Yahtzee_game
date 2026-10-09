@@ -82,6 +82,7 @@
                 );
             }
         }
+
         checkAchievements(event,data){
             switch(event){
                 case 'score':

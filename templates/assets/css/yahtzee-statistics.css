@@ -1,0 +1,77 @@
+
+
+.modal-content{
+    width:min(90%,500px);
+    max-height:85vh;
+    overflow-y:auto;
+    background:#243046;
+    color:white;
+    padding:20px;
+    border-radius:20px;
+    position:relative;
+}
+
+.close-btn{
+    position:absolute;
+    top:15px;
+    right:15px;
+    background:none;
+    border:none;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin:20px 0;
+}
+
+.stat-card{
+    background:#36435c;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.stat-card span{
+    font-size:28px;
+    color:#FFD54A;
+    font-weight:bold;
+}
+.stat-card p{
+    font-size:28px;
+    color:#FFFFFF;
+    font-weight:bold;
+}
+.progress-bar{
+    background:#555;
+    border-radius:20px;
+    height:16px;
+    overflow:hidden;
+    margin:10px 0 20px;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:#22c55e;
+    transition:.4s;
+}
+
+    #scoreHistory{
+        display:flex;
+        gap:8px;
+        margin:15px 0;
+        flex-wrap:wrap;
+}
+
+.score-pill{
+    background:#FFD54A;
+    color:#222;
+    padding:6px 10px;
+    border-radius:20px;
+    font-weight:bold;
+}

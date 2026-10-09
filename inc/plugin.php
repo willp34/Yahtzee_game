@@ -81,6 +81,13 @@ class YG_Plugin
             true
         );
         wp_enqueue_script(
+            'yahtzee_achievements',
+            YG_URL.'assets/js/src/yahtzee-achievements.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+        wp_enqueue_script(
             'yahtzee_stats',
             YG_URL.'assets/js/src/yahtzee-statistics.js',
             ['jquery'],
