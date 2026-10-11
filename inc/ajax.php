@@ -24,6 +24,11 @@
 
             add_action('wp_ajax_yg_statistics', [$this, 'yahtzee_statistics']);
             add_action('wp_ajax_nopriv_yg_statistics', [$this, 'yahtzee_statistics']);
+
+            //Achievements
+            add_action('wp_ajax_yg_achievements', [$this, 'loadAchievements']);
+            add_action('wp_ajax_nopriv_yg_achievements', [$this, 'loadAchievements']);
+
         }
 
 
@@ -131,8 +136,19 @@
                 'held' => $game->get_held(),
                 ]);
         }
+        /*
+         * load achievements
+         */
 
+        public function loadAchievements(){
+            $this->check_request();
+            $achievements = new Achievements();
 
+            wp_send_json_success([
+                'achievements' => $achievements->getAchievements(),
+            ]);
+
+        }
 
         /*
          * Render statistics

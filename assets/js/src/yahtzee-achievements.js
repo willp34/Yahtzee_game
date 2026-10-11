@@ -1,5 +1,7 @@
     class Yahtzee_achievements {
         constructor(){
+            this.api = new YahtzeeAPI();
+
             this.achievements ={
                 luckGame: {
                     name : 'Lucky Game' ,
@@ -62,8 +64,27 @@
             );
         }
 
-        load(){
+        async load(){
             try{
+
+                const response = await this.api.achievements();
+
+                if (!response.success) {
+                    throw new Error('Failed to load achievements');
+                }
+
+                const saved = response.data.achievements ?? {};
+
+                Object.keys(this.achievements).forEach(id => {
+                    if (saved[id]) {
+                        this.achievements[id].unlocked =
+                        Boolean(saved[id].unlocked);
+                    }
+                });
+            } catch (error) {
+                console.error('Unable to load achievements:', error);
+            }
+            /*try{
                 const saved = localStorage.getItem('yahtzee_achievements');
                 if (!saved) {
                     return;
@@ -80,7 +101,7 @@
                     'Unable to load achievement',
                     error
                 );
-            }
+            }*/
         }
         checkAchievements(event,data){
             switch(event){

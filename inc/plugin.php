@@ -1,4 +1,4 @@
-<?
+<?php
 class YG_Plugin
 {
     private static $instance;
@@ -12,14 +12,37 @@ class YG_Plugin
     {
         //require_once YG_PATH.'includes/class-assets.php';
        // require_once YG_PATH.'includes/class-shortcode.php';
+        require_once YG_PATH.'inc/achievements.php';
         require_once YG_PATH.'inc/ajax.php';
         require_once YG_PATH.'inc/game.php';
         require_once YG_PATH.'inc/score-card.php';
 
+        // Activate plug-in
+        add_action('init',[$this, 'register_achievements_cpt']);
         add_action('wp_enqueue_scripts', [$this,'enqueue']);
         add_shortcode('yahtzee', [$this,'render_shortcode']);
+
+
        // new YG_Shortcode();
+
         new YG_Ajax();
+
+
+    }
+    /** * Register the achievement custom post type. */
+    public function register_achievements_cpt() {
+
+        register_post_type('achievement', [
+            'labels' => [
+                'name' => 'Achievements',
+                'singular_name' => 'Achievement'
+            ],
+            'public' => true,
+            'has_archive' => true,
+            'rewrite' => ['slug' => 'achievements'],
+            'supports' => ['title' , 'editor', 'custom-fields'],
+        ]);
+        //new Achievements();
     }
 
     public function render_shortcode()
@@ -42,7 +65,7 @@ class YG_Plugin
         wp_enqueue_script(
             'lucide',
             'https://unpkg.com/lucide@latest/dist/umd/lucide.min.js',
-            [],
+            ['jquery'],
             '1.46.0',
             true
         );
@@ -69,13 +92,20 @@ class YG_Plugin
         wp_enqueue_script(
             'yahtzee_game',
             YG_URL.'assets/js/src/yahtzee-game.js',
-            ['jquery'],
+            [],
             '1.0',
             true
         );
         wp_enqueue_script(
             'yahtzee_modal',
             YG_URL.'assets/js/src/yahtzee-statistics-modal.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+        wp_enqueue_script(
+            'yahtzee_achievements',
+            YG_URL.'assets/js/src/yahtzee-achievements.js',
             ['jquery'],
             '1.0',
             true

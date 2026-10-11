@@ -1,6 +1,11 @@
 // Server communication
     class YahtzeeAPI {
 
+
+        constructor(){
+              // Use the URL and nonce provided by wp_localize_script()
+            this.ajaxURL= Yahtzee.ajax_url
+        }
         async request(action, data=[]){
             const formData = new FormData();
             formData.append('action',action);
@@ -42,5 +47,9 @@
         statistics(){
 
             return this.request("yg_statistics");
+        }
+
+        achievements(){
+            return this.request("yg_achievements");
         }
     }
