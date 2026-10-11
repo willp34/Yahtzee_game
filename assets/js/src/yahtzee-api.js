@@ -4,28 +4,44 @@
 
         constructor(){
               // Use the URL and nonce provided by wp_localize_script()
-            this.ajaxURL= Yahtzee.ajax_url
+            this.ajaxURL= Yahtzee.ajax_url;
+            this.nonce =Yahtzee.nonce;
         }
-        async request(action, data=[]){
+        async request(action, data={}){
+
             const formData = new FormData();
             formData.append('action',action);
-            formData.append('nonce',Yahtzee.nonce);
+            formData.append('nonce',this.nonce);
 
             Object.entries(data).forEach(([key,value]) => {
-                formData.append(key,value);
+                formData.append(
+                    key,
+                    typeof value === 'object' && value !== null
+                    ? JSON.stringify(value)
+                    : value);
             })
-            const response = await fetch(Yahtzee.ajax_url,{
+            const response = await fetch(this.ajaxURL,{
                 method: 'POST',
                 credentials: 'same-origin',
                 body: formData
             })
-            if(!response.ok){
-                throw new Error(`HTTP ${response.status}`); ;
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
             }
-            return response.json();
-        }
 
-        roll(){
+            const result = await response.json();
+
+
+            if (!result.success) {
+                throw new Error(
+                    result.data?.message || 'AJAX request failed'
+                );
+
+            }
+            return result.data;
+        }
+    }
+     /*   roll(){
             return this.request('yg_roll');
         }
 
@@ -53,3 +69,4 @@
             return this.request("yg_achievements");
         }
     }
+*/

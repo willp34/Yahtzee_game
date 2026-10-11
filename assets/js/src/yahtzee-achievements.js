@@ -67,13 +67,10 @@
         async load(){
             try{
 
-                const response = await this.api.achievements();
+                const achievementsData = await this.api.request("yg_achievements");;
 
-                if (!response.success) {
-                    throw new Error('Failed to load achievements');
-                }
 
-                const saved = response.data.achievements ?? {};
+                const saved = achievementsData.achievements ?? {};
 
                 Object.keys(this.achievements).forEach(id => {
                     if (saved[id]) {

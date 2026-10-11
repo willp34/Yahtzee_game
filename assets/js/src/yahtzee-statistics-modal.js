@@ -27,14 +27,11 @@
 
             try{
 
-                const response = await this.api.statistics();
+                const stats = await this.api.request("yg_statistics");
                 //this.dice.stopAnimation();
 
-                if(!response.success){
-                    throw new Error(response.data.message);
-                }
 
-                this.modalBody.innerHTML = response.data.body;
+                this.modalBody.innerHTML = stats.body;
 
                 //STATISTICS
 

@@ -82,18 +82,16 @@
            // this.dice.startAnimation();
             try{
 
-                const response = await this.api.roll();
+                const roll = await this.api.request('yg_roll');
                 //this.dice.stopAnimation();
-                if(!response.success){
-                    throw new Error(response.data.message);
-                }
+
                 // Animate the dice before applying the new game state.
-                this.dice.animateRoll(response.data.dice, () =>{
-                    this.applyState(response.data);
+                this.dice.animateRoll(roll.dice, () =>{
+                    this.applyState(roll);
                     this.rollButton.disabled= this.rollsLeft === 0;
                     this.hasRolledThisTurn =true ;
                 })
-                this.updateDiceStatistics(response.data.dice);
+                this.updateDiceStatistics(roll.dice);
 
             }
             catch(err){
@@ -125,19 +123,17 @@
         */
             if(row.classList.contains("score-used")) return ;
             try{
-                const response = await this.api.score(
-                    row.dataset.category
-                )
+                const scores = await this.api.request(
+                    "yg_score",
+                    { category : row.dataset.category });
 
-                if(!response.success) return;
-
-                this.applyState(response.data);
+                this.applyState(scores);
                 this.achievements.checkAcheivements(
                     row.dataset.category,
-                    response.data
+                    scores
                 );
                 // Update totals and bonus progress here.
-                this.scorecard.setTotals(response.data);
+                this.scorecard.setTotals(scores);
                 this.hasRolledThisTurn =false;
                 this.rollButton.disabled =false;
 
@@ -148,11 +144,11 @@
 
         async resetGame(){
             try {
-                const response = await this.api.reset();
+                const reset = await this.api.request("yg_reset");
 
-                if (!response.success) return;
-                this.applyState(response.data);
-                this.scorecard.setTotals(response.data);
+
+                this.applyState(reset);
+                this.scorecard.setTotals(reset);
                 this.rollsDisplay.textContent = "3";
                 this.hasRolledThisTurn =false;
                 this.messages.style.display = "block";
@@ -167,8 +163,13 @@
         async toggleHold(index){
             const held = this.dice.toggleHold(index);
 
+
             try{
-                await this.api.hold(index,held);
+                await this.api.request('yg_hold',{
+                    die:index,
+                    held: held ? '1' : '0'
+                });
+
 
             }
             catch(err){
