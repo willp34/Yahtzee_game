@@ -92,6 +92,10 @@
                     this.hasRolledThisTurn =true ;
                 })
                 this.updateDiceStatistics(roll.dice);
+                this.achievements.checkAchievements(
+                    "roll",
+                    roll
+                );
 
             }
             catch(err){
@@ -125,13 +129,15 @@
             try{
                 const scores = await this.api.request(
                     "yg_score",
-                    { category : row.dataset.category });
+                    { "category" : row.dataset.category });
 
                 this.applyState(scores);
-                this.achievements.checkAcheivements(
-                    row.dataset.category,
+                this.achievements.checkAchievements(
+                    "category",
                     scores
                 );
+
+
                 // Update totals and bonus progress here.
                 this.scorecard.setTotals(scores);
                 this.hasRolledThisTurn =false;
@@ -202,9 +208,11 @@
                 this.turns.textContent =data.turns;
             }
             if (this.scorecard.isGameOver(data.used_scores)) {
+                this.achievements.checkAchievements(
+                    "gameOver",
+                    scores
+                );
                 this.rollButton.disabled = true;
-
-
                 this.messages.style.display = "block";
                 this.messages.textContent = "🎉 Game Over!";
 

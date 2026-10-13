@@ -67,7 +67,7 @@
         async load(){
             try{
 
-                const achievementsData = await this.api.request("yg_achievements");;
+                const achievementsData = await this.api.request("yg_achievements");
 
 
                 const saved = achievementsData.achievements ?? {};
@@ -100,7 +100,7 @@
                 );
             }*/
         }
-        checkAchievements(event,data){
+        checkAchievements(event, data){
             switch(event){
                 case 'score':
                     this.checkScoreAchievements(data);
@@ -123,41 +123,48 @@
         }
 
         checkRollAchievements(data){
+            const possibleScores = data.possible_scores ?? {};
+
+            if(data.rolls ==1 &&
+                Number(possibleScores.yahtzee) ==50){
+                    this.unlock("luckGame");
+                }
 
         }
         checkCategoryAchievements(data){
             // Risk taker
             // Score Chance with 30+ points
+            const usedScores = data.used_scores ?? {};
+
             if(
-                category =='chance' &&
-                data.possible_scores.chance >=30){
+                Object.hasOwn(usedScores, 'chance') &&
+                 Number(usedScores.chance) >=30){
                     this.unlock("riskTaker");
             }
         }
         checkGameAchievements(data){
+            const total =Number(data.grand_total ?? 0);
+            const upperBonus = Number(data.upper_bonus ?? 0) ;
             //Perfectionist
             //upper bonus achieved
-            if(data.upper_bonus ==35){
+            if(upperBonus >=35){
                 this.unlock("perfectionist");
             }
 
             //100 club
             // Finish a game withh 100+
-            if(data.grand_total >=100){
-                this.unlock("century");
-            }
+            if(total >=100) this.unlock("century");
+
 
             //200 club
             // Finish a game withh 200+
-            if( data.grand_total >=200){
-                this.unlock("doubleCentury");
-            }
+            if( total >=200) this.unlock("doubleCentury");
+
 
             // Monster Yahtzee
             // Score 300+
-            if( data.grand_total >=300){
-                this.unlock("monsterYahtzee");
-            }
+            if( total >=300) this.unlock("monsterYahtzee");
+
         }
 
         show(id){

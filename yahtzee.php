@@ -34,7 +34,7 @@ register_deactivation_hook(__FILE__, 'yg_deactivate_plugin');
 
 function yg_deactivate_plugin()
 {
-    $achievements = get_posts([
+   /* $achievements = get_posts([
         'post_type'      => 'achievement',
         'post_status'    => 'any',
         'posts_per_page' => -1,
@@ -43,7 +43,7 @@ function yg_deactivate_plugin()
 
     foreach ($achievements as $achievement_id) {
         wp_delete_post($achievement_id, true);
-    }
+    }*/
 
     flush_rewrite_rules();
 }
