@@ -4,12 +4,16 @@
         constructor(){
 
             this.api = new YahtzeeAPI();
+
             this.dice = new YahtzeeDice(
                 document.getElementById('dice-board')
             );
             this.scorecard = new YahtzeeScorecard();
+            //Yahtzee Stats
 
-            this.achievements = new Yahtzee_achievements();
+            this.statistics = new Yahtzee_statistics();
+            this.statisticsSaved = false;
+
             this.rollButton = document.getElementById('yg-roll');
             this.resetButton = document.getElementById('yg-reset');
             this.rollsDisplay = document.getElementById('rolls');
@@ -27,9 +31,47 @@
                 smallStraights: 0,
                 largeStraights: 0
             };
+            this.initialize();
 
-            this.bindEvents();
-            this.loadInitialState();
+        }
+
+        async initialize(){
+                try{
+                    await this.initialize_Definitions();
+                     this.bindEvents();
+                    this.loadInitialState();
+                }catch (error) {
+                    console.error('Game initialization failed:', error);
+                    this.messages.style.display = 'block';
+                    this.messages.textContent =
+                    'Unable to initialize the game. Please try again.';
+                }
+
+        }
+        async initialize_Definitions() {
+
+                const cacheKey ="achievementDefinitions"
+                let definitions ;
+
+                try{
+                    definitions= JSON.parse(
+                        localStorage.getItem(cacheKey) || 'null'
+                    );
+                }
+                catch{
+                    definitions=null;
+                }
+
+                if(!definitions){
+                    const achievementsData = await this.api.request("yg_achievements");
+                    const definitions = achievementsData.achievements ?? {};
+                    if (!definitions) {
+                        throw new Error('Achievement definitions not found.');
+                    }
+                    localStorage.setItem(cacheKey, JSON.stringify(definitions));
+                }
+                //console.log("Definitions  ", definitions);
+            this.achievements = new Yahtzee_achievements(definitions);
         }
 
         loadInitialState(){
@@ -71,7 +113,7 @@
 
 
         async rollDice(){
-            this.diceStats.totalRolls++;
+
 
             this.messages.style.display = "none";
             if(this.rolling || this.rollsLeft===0) return;
@@ -83,6 +125,7 @@
             try{
 
                 const roll = await this.api.request('yg_roll');
+                 this.diceStats.totalRolls++;
                 //this.dice.stopAnimation();
 
                 // Animate the dice before applying the new game state.
@@ -137,7 +180,20 @@
                     scores
                 );
 
+                // Save lifetime statistics once, when all categories are filled.
+                if (
+                    this.scorecard.isGameOver(scores.used_scores) &&
+                    !this.statisticsSaved
+                ) {
+                    this.statistics.saveStatistics(
+                        scores.grand_total,
+                        scores.used_scores,
+                        this.diceStats,
+                        (scores.upper_section ?? 0) >= 63
+                    );
 
+                    this.statisticsSaved = true;
+                }
                 // Update totals and bonus progress here.
                 this.scorecard.setTotals(scores);
                 this.hasRolledThisTurn =false;
@@ -154,6 +210,16 @@
 
 
                 this.applyState(reset);
+
+                this.diceStats = {
+                    totalRolls: 0,
+                    yahtzees: 0,
+                    fullHouses: 0,
+                    smallStraights: 0,
+                    largeStraights: 0
+                };
+
+                this.statisticsSaved = false;
                 this.scorecard.setTotals(reset);
                 this.rollsDisplay.textContent = "3";
                 this.hasRolledThisTurn =false;
@@ -210,7 +276,7 @@
             if (this.scorecard.isGameOver(data.used_scores)) {
                 this.achievements.checkAchievements(
                     "gameOver",
-                    scores
+                    data
                 );
                 this.rollButton.disabled = true;
                 this.messages.style.display = "block";

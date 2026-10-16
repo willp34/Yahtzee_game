@@ -14,6 +14,7 @@
             //STATISTICS
 
             this.YahtzeeStats = new Yahtzee_statistics();
+            this.statisticsSaved = false;
         }
         categoryLabel(key) {
 
@@ -107,9 +108,9 @@
 
         setTotals(data){
 
-            let upperScore = data.upper_section | null;
+            let upperScore = data.upper_section ?? null;
              // ...existing scoring code...
-                    console.log("data: ", data);
+
             const bonus = upperScore >= 63 ? 35 : 0;
             this.upperBonus.textContent = data.upper_bonus;
             this.upperTotal.textContent = data.upper_section;
@@ -119,17 +120,20 @@
             if(upperScore !=null){
                this.updateBonusProgress(upperScore);
             }
-
-            if( this.isGameOver(data.used_scores ) ){
+/*
+            if( this.isGameOver(data.used_scores )  &&
+                !this.statisticsSaved){
                 console.log("GAME OVER POPULATE STATISTICS");
 
                 this.YahtzeeStats.saveStatistics(data.grand_total,
                                                  data.used_scores,
+                                                 data.diceStats ,
                                                  upperScore >= 63
-                                                 )
+                                                 );
+                this.statisticsSaved = true;
 
             }
-
+*/
         }
 
         updateBonusProgress(upperScore){

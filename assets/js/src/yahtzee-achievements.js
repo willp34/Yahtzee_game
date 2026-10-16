@@ -1,85 +1,55 @@
     class Yahtzee_achievements {
-        constructor(){
-            this.api = new YahtzeeAPI();
 
-            this.achievements ={
-                luckGame: {
-                    name : 'Lucky Game' ,
-                    description:'Yahtzee on first roll.' ,
-                    unlocked : false
-                },
-                hotStreak:{
-                    name: 'Lucky Roll' ,
-                    description :'3 games over 250',
-                    unlocked : false
-                } ,
-                perfectionist :{
-                    name :'Perfectionist',
-                    description: 'Upper bonus achieved',
-                    unlocked: false
-                },
-                riskTaker :{
-                    name: 'Risk Taker',
-                    description: 'Score Chance with 30+ points' ,
-                    unlocked: false
-                },
-                century: {
-                    name: '100 Club',
-                    description: 'Finish a game with 100 or more points',
-                    unlocked: false
-                },
-
-                doubleCentury: {
-                    name: '200 Club',
-                    description: 'Finish a game with 200 or more points',
-                    unlocked: false
-                },
-                monsterYahtzee :{
-                    name :'Monster Yahtzee',
-                    description :'Score 300+ total',
-                    unlocked: false
-                }
-
-            };
-
+        constructor(definitions){
+            this.achievements = definitions;
+            this.checkers = {};
+            //console.log("Achievements ", definitions);
             this.load();
+            const savedProgress = this.achievements;
+            //console.log("SAVED " ,savedProgress);
+            for(const [id,definition] of Object.entries(definitions.achievementDefinitions)){
+                //console.log("award  ", definition);
+                const gameProgress =savedProgress.achievementProgress[id];
+
+              //  console.log("progress object ", gameProgress);
+                this.checkers[id]  = AchievementFactory.create(definition,
+                                                               gameProgress);
+            }
+
+            console.log("Achievements Object: ", this.checkers);
+/*
+            this.load();
+            */
         }
 
         unlock(id){
-            if(!this.achievements[id]){
-                return ;
-            }
-            if(this.achievements[id].unlocked){
-                return ;
-            }
-            this.achievements[id].unlocked = true;
+            const achievement = this.achievements[id];
+
+            if(!achievement  || achievement.unlocked) return ;
+
+            achievement.unlocked = true;
             this.save();
             this.show(id);
         }
 
         save(){
             localStorage.setItem(
-                'yahtzee_achievements',
+                'achievementProgress',
                 JSON.stringify(this.achievements)
             );
         }
 
-        async load(){
-            try{
+        load(){
+            try {
+                const progress = JSON.parse(
+                    localStorage.getItem('achievementDefinitions').achievementProgress || '{}'
+                );
 
-                const achievementsData = await this.api.request("yg_achievements");
-
-
-                const saved = achievementsData.achievements ?? {};
-
-                Object.keys(this.achievements).forEach(id => {
-                    if (saved[id]) {
-                        this.achievements[id].unlocked =
-                        Boolean(saved[id].unlocked);
-                    }
-                });
+                for (const [id, achievement] of Object.entries(this.achievements.achievementProgress)) {
+                    achievement.unlocked = Boolean(progress[id]?.unlocked);
+                }
             } catch (error) {
-                console.error('Unable to load achievements:', error);
+                console.error('Unable to load achievement progress:', error);
             }
             /*try{
                 const saved = localStorage.getItem('yahtzee_achievements');
@@ -101,7 +71,49 @@
             }*/
         }
         checkAchievements(event, data){
-            switch(event){
+               console.log("Checker count:", Object.keys(this.checkers).length);
+            for(const [id, checker] of Object.entries(this.checkers)){
+               //
+
+                if(checker){
+
+
+
+                    const definition =this.achievements.achievementDefinitions[id];
+                    const progress = this.achievements.achievementProgress[id];
+
+
+                    if(definition.event !== event){
+                        continue;
+                    }
+
+                    if(!progress || progress.unlocked){
+                        continue;
+                    }
+                    //console.log("check Event ");
+                    //console.log("checker Object  ", checker);
+                    //console.log("Event ", event," evv ",checker.definition.event);
+                    console.log("definition " , id,  "  :  ",checker.check(data));
+
+                    if(checker.check(data)){
+
+                        console.log("Event can be unlocked ", event," evv ",checker.definition.target);
+                    }
+
+                }
+
+                //if(definition.event !== event) continue ;
+
+               // console.log("Unlock ", unlocked);
+               // if(unlocked) continue;
+
+
+
+                /*if(checker.check(data)){
+                    this.unlock(id);
+                }*/
+            }
+            /* switch(event){
                 case 'score':
                     this.checkScoreAchievements(data);
                     break;
@@ -114,7 +126,7 @@
                 case 'gameOver':
                     this.checkGameAchievements(data);
                     break;
-            }
+            } */
         }
 
         //validate Achievements
@@ -126,7 +138,7 @@
             const possibleScores = data.possible_scores ?? {};
 
             if(data.rolls ==1 &&
-                Number(possibleScores.yahtzee) ==50){
+                Number(data.possibleScores.yahtzee) ==50){
                     this.unlock("luckGame");
                 }
 

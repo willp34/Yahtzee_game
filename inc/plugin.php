@@ -111,6 +111,45 @@ class YG_Plugin
             true
         );
         wp_enqueue_script(
+            'yahtzee_achievements_factory',
+            YG_URL.'assets/js/src/achievements/achievementFactory.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+
+        wp_enqueue_script(
+            'yahtzee_achievement',
+            YG_URL.'assets/js/src/achievements/achievement.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+
+
+        wp_enqueue_script(
+            'yahtzee_achievements_category',
+            YG_URL.'assets/js/src/achievements/categoryAchievement.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+
+        wp_enqueue_script(
+            'yahtzee_achievements_roll',
+            YG_URL.'assets/js/src/achievements/rollAchievement.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+        wp_enqueue_script(
+            'yahtzee_achievements_target',
+            YG_URL.'assets/js/src/achievements/targetAchievement.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
+        wp_enqueue_script(
             'yahtzee_stats',
             YG_URL.'assets/js/src/yahtzee-statistics.js',
             ['jquery'],

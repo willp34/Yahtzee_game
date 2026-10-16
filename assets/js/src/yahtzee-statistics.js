@@ -14,7 +14,7 @@
             this.scoreHistory = document.getElementById('scoreHistory');
         }
 
-        saveStatistics(finalScore, scoreCard, earnedUpperBonus){
+        saveStatistics(finalScore, scoreCard,diceStats, earnedUpperBonus){
 
             const game_stats = JSON.parse(localStorage.getItem("yahtzeeStats")) ||
             {
@@ -23,7 +23,14 @@
                 totalScore: 0,
                 upperBonus: 0,
                 scoreHistory: [],
-                categoryTotals:{}
+                categoryTotals:{},
+                diceStats: {
+                    totalRolls: 0,
+                    yahtzees: 0,
+                    fullHouses: 0,
+                    smallStraights: 0,
+                    largeStraights: 0
+                }
             };
 
             game_stats.gamesPlayed++;
@@ -44,6 +51,19 @@
                     game_stats.categoryTotals[category] =
                                       (game_stats.categoryTotals[category]|| 0)+ score ;
             })
+            game_stats.diceStats = game_stats.diceStats || {
+                        totalRolls: 0,
+                        yahtzees: 0,
+                        fullHouses: 0,
+                        smallStraights: 0,
+                        largeStraights: 0
+                    };
+
+            game_stats.diceStats.totalRolls += diceStats.totalRolls;
+            game_stats.diceStats.yahtzees += diceStats.yahtzees;
+            game_stats.diceStats.fullHouses += diceStats.fullHouses;
+            game_stats.diceStats.smallStraights += diceStats.smallStraights;
+            game_stats.diceStats.largeStraights += diceStats.largeStraights;
             localStorage.setItem("yahtzeeStats" , JSON.stringify(game_stats));
         }
         loadStatistics(){
